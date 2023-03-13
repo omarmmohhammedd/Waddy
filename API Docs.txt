@@ -1,0 +1,43 @@
+
+//////////////////////////////////////////////////////////////// Authorization API \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+http://localhost:8080/auth/userInfo => For Get User Info 
+
+method => GET
+headers => Authorization
+status => 200
+response => user
+
+http://localhost:8080/auth/login   => For User Login 
+
+body => { email, password } 
+method => POST
+response => { token, user } 
+status => 200
+
+http://localhost:8080/auth/register?type=(comapny or personal) =>   For Register New User
+
+method => POST
+type = personal => body => { firstName, lastName, email, password, confirmPassword, phone, address }
+type = company => body => { firstName, lastName, email, password, confirmPassword, companyName, industry, phone, governorate, postalcode }
+status => 201
+
+http://localhost:8080/auth/forget  For Send OTP To User
+ 
+method => POST
+body => { email }
+status => 200
+
+http://localhost:8080/auth/verifyotp  => For Verify OTP To User
+
+method => POST
+body => { email , otp}
+response => userId
+status => 200
+
+http://localhost:8080/auth/updatepassword  For Update Password To User :
+
+method => Patch
+body => {userId , password,confirmPassword}
+status => 200
+
