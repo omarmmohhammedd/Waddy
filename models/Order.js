@@ -59,7 +59,6 @@ const Order = mongoose.model('Orders', new mongoose.Schema({
         type: String,
         required: true
     },
-    products: Array,
     category: {
         type: String,
         required: true
@@ -69,17 +68,25 @@ const Order = mongoose.model('Orders', new mongoose.Schema({
         required: true
     },
     dimension: {
-        type:Array
+        type: Array
     },
-    services: {
+    price: {
         type: Number,
         default:25
     },
-    notes: String,
-    paymentMethod: {
-        type: String,
+    deliverTime: {
+        type: "String",
         required: true
     },
+    status: {
+        type: String,
+        default:"Pending"  
+    },
+    paymentId: {
+        type: Number,
+        required: true
+    },
+    notes: String,
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'

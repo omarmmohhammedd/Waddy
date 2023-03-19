@@ -6,13 +6,13 @@ require("dotenv").config()
 const PORT = process.env.PORT || 8080
 const verifyToken = require("./middlewares/verifyToken")
 
-
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
-app.use("/auth",require("./routes/auth"))
+app.use("/auth", require("./routes/auth"))
+
 app.use("/client",verifyToken,require("./routes/client"))
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

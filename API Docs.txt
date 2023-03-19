@@ -41,3 +41,67 @@ method => Patch
 body => {userId , password,confirmPassword}
 status => 200
 
+
+//////////////////////////////////////////////////////////////// Client Orders \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+http://localhost:8080/client/order For Client Make Order :
+
+method => POST
+body => {"senderPostalCode","senderAddress","receivedName","receivedPhone","receivedEmail","receivedPostalCode","receivedAddress","category","weight","dimension","services","notes","paymentId"}
+headers => Authorization
+response => order
+status => 201
+
+http://localhost:8080/client/orders For Get All Orders Blong To User
+
+method => GET
+headers => Authorization
+response => orders
+status => 200
+
+http://localhost:8080/client/order/:orderId For Get Order By ID :
+
+method => GET
+headers => Authorization
+params => orderId
+response => order
+status => 200
+
+http://localhost:8080/client/order/track/:trackId For Get Order By Track Id:
+
+method => GET
+headers => Authorization
+params => trackId
+response => order
+status => 200
+
+http://localhost:8080/client/order/:orderId  For Update Order :
+
+method => Patch
+headers => Authorization
+body => {"senderPostalCode","senderAddress","receivedName","receivedPhone","receivedEmail","receivedPostalCode","receivedAddress","category","weight","dimension","services","notes","paymentId"}
+response => order
+status => 201
+
+http://localhost:8080/client/order/:orderId For Delete Order:
+
+method => Delete
+headers => Authorization
+params => orderId
+status => 200
+
+http://localhost:8080/client/paymop/auth For Get Paymop Auth => first step:
+
+method => GET
+headers => Authorization
+body => price
+response => {token , paymentId}
+status => 200
+
+http://localhost:8080/client/paymop/payment_key For Payment Key => second step:
+
+method => POST
+headers => Authorization
+body => order
+response => Link
+status => 200
