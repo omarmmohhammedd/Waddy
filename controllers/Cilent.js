@@ -1,19 +1,54 @@
 const User = require("../models/User")
 const Order = require("../models/Order")
+const Review = require("../models/Review")
 const { OrderSummery } = require("../config/Mailer")
 const { getAuthData, getPaymentKey } = require("../config/paymop")
 
+const getRate = async (req, res) => { 
+    const { Dcountry, Rcountry, weight, Npackge } = req.body
+    if (!Dcountry || !Rcountry || !weight || !Npackge) return res.status(400).json({ msg: "All Feilds Are Required" })
+    if (typeof Dcountry !== "string" || typeof Rcountry !== "string" || typeof weight !== "number" || typeof Npackge !== "number") return res.status(400).json({ msg: "Invalid Type Of Requested Data" })
+    if (Dcountry == Rcountry) {
+        res.status(200).json({
+            From: Dcountry,
+            To: Rcountry,   
+            Regular: {
+                cost: 15 + (weight * 5 * Npackge),
+                date: "3 Days"
+            },
+            Express: {
+                cost: (30 + weight * 5 * Npackge),
+                date: "1 Days"
+            }
+        })   
+    } else {
+        res.status(200).json({
+            From: Dcountry,
+            To: Rcountry,
+            Regular: {
+                cost: 25 + (weight * 5 * Npackge ),
+                date: "3 Days"
+            },
+            Express: {
+                cost: 55 + (weight * 10 * Npackge),
+                date: "1 Days"
+            }
+        }) 
+    }
+}
+
 const makeOrder = async (req, res) => {
     const  userId  = req.user.id
-    const {  senderPostalCode, senderAddress, receivedName, receivedPhone, receivedEmail, receivedPostalCode, receivedAddress, category, weight, dimension, services, notes,paymentId } = req.body
+    const { senderName, senderPhone, senderEmail,senderPostalCode, senderAddress, receivedName, receivedPhone, receivedEmail, receivedPostalCode, receivedAddress, category, weight, dimension, services, notes, paymentId, deliverTime } = req.body
+    if (!senderName ||  !senderPhone ||  !senderEmail || !senderPostalCode || !senderAddress || !receivedName || !receivedPhone || !receivedEmail || !receivedPostalCode || !receivedAddress || !category || !weight || !dimension  || !notes || !paymentId || !deliverTime) return res.status(400).json({msg:"All Fields Are Required"})
     try {
         const foundUser = await User.findById(userId)
         if (!foundUser) return res.status(404).send("User not found")
         const order = new Order({
             user:userId,
-            senderName:foundUser.firstName,
-            senderPhone: foundUser.phone,
-            senderEmail: foundUser.email,
+            senderName,
+            senderPhone,
+            senderEmail,
             senderPostalCode,
             senderAddress,
             receivedName,
@@ -24,8 +59,8 @@ const makeOrder = async (req, res) => {
             category,
             weight,
             dimension,
-            price:services,
-            deliverTime:"2 Days",
+            services,
+            deliverTime,
             notes,
             paymentId
         })
@@ -121,4 +156,33 @@ const Payment_key = async (req, res) => {
     if (PaymentData.error) return res.status(PaymentData.error.response.status).json(PaymentData.error.message)
     res.status(200).json(PaymentData)
 }
-module.exports = { makeOrder, getOrders, getOrderById, getOrderByTrackId, updateOrder, deleteOrder, getPaymopAuth, Payment_key }
+
+const makeReview = async (req, res) => {
+    const userId = req.user.id
+    const {orderId } = req.params
+    const { delegateId, review } = req.body
+    if (!delegateId || !review) return res.status(400).json({ msg: "All Feilds Are Required" })
+    try {
+        const userInfo = await User.findById(userId).exec()
+        if (!userInfo) return res.status(400).json({ msg: "User Not Found" })
+        const delegateInfo = await User.findById(delegateId).exec()
+        if (!delegateInfo) return res.status(400).json({ msg: "Delegate Not Found" })
+        const orderInfo = await Order.findById(orderId).exec()
+        if (!orderInfo) return res.status(400).json({ msg: "Order Not Found" })
+        if (review < 1 || review > 5) return res.status(409).json({ msg: "Review Must Be > 1" })
+        await Review.create({
+            userId,
+            orderId,
+            delegateId,
+            review
+        }).then((val, err) => {
+            if (err) return res.status(500).json({ msg: err.message })
+            res.sendStatus(201)
+        }) 
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ msg:error.message})
+    }
+    
+}
+module.exports = { makeOrder, getOrders, getOrderById, getOrderByTrackId, updateOrder, deleteOrder, getPaymopAuth, Payment_key, getRate,makeReview }

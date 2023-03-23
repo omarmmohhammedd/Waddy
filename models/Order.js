@@ -70,7 +70,7 @@ const Order = mongoose.model('Orders', new mongoose.Schema({
     dimension: {
         type: Array
     },
-    price: {
+    services: {
         type: Number,
         default:25
     },

@@ -42,12 +42,18 @@ body => {userId , password,confirmPassword}
 status => 200
 
 
+http://localhost:8080/auth/changepassword For changePassword To Authorize User :
+
+method => Patch
+body => { oldPassword, newPassword, newConfirmPassword }
+status => 200
+
 //////////////////////////////////////////////////////////////// Client Orders \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 http://localhost:8080/client/order For Client Make Order :
 
 method => POST
-body => {"senderPostalCode","senderAddress","receivedName","receivedPhone","receivedEmail","receivedPostalCode","receivedAddress","category","weight","dimension","services","notes","paymentId"}
+body => {senderName, senderPhone, senderEmail,senderPostalCode, senderAddress, receivedName, receivedPhone, receivedEmail, receivedPostalCode, receivedAddress, category, weight, dimension, services, notes, paymentId, deliverTime}
 headers => Authorization
 response => order
 status => 201
@@ -89,6 +95,23 @@ method => Delete
 headers => Authorization
 params => orderId
 status => 200
+
+http://localhost:8080/client/get_rate For Get Rate:
+
+method => post
+headers => Authorization
+body=>{ Dcountry, Rcountry, weight, Npackge }
+status => 200
+json => {From , To , Regular , Express}
+
+
+http://localhost:8080/client/make_review/:orderId For Make Review:
+
+method => post
+headers => Authorization
+params => orderId
+body=>{ delegateId, review }
+status => 201
 
 http://localhost:8080/client/paymop/auth For Get Paymop Auth => first step:
 
