@@ -5,7 +5,7 @@ const Review = mongoose.model('Reviews', new mongoose.Schema({
         ref: "Users",
         required: true
     },
-    delegate: {
+    delegateId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Users",
         required: true
@@ -13,6 +13,11 @@ const Review = mongoose.model('Reviews', new mongoose.Schema({
     orderId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Orders",
+        required: true
+    },
+    supervisorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
         required: true
     },
     review: {

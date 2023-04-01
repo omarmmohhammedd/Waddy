@@ -5,6 +5,7 @@ const { sendOTP, verifyOTP } = require("../config/Mailer")
 
 const Register = async (req, res) => {
     const { type } = req.query
+    const userImg = req.file ? req.file.path :false
     if (type === "personal") {
         const { firstName, lastName, email, password, confirmPassword, phone, address } = req.body
         if (!firstName || !lastName || !email || !password || !confirmPassword || !phone || !address) return res.status(400).json({ msg: "All Fields Required" })
@@ -18,7 +19,8 @@ const Register = async (req, res) => {
                 email,
                 password: await bcrypt.hash(password, 10),
                 phone,
-                address
+                address,
+                userImg: userImg && "http://localhost:8080" + userImg
             }).then((value, err) => {
                 if (err) return res.status(500).json({ msg: err.message })
                 res.sendStatus(201)
@@ -43,7 +45,8 @@ const Register = async (req, res) => {
                 industry,
                 phone,
                 governorate,
-                postalcode
+                postalcode,
+                userImg: userImg && "http://localhost:8080" + userImg
             }).then((value,err) => {
                 if (err) return res.status(500).json({ msg: err.message })
                 res.sendStatus(201)
@@ -56,8 +59,6 @@ const Register = async (req, res) => {
         
         
     }
-
-
 }
 
 const Login = async (req, res) => { 
@@ -166,4 +167,4 @@ const changeUserInfo = async (req, res) => {
     })
 }
 
-module.exports = { Register, Login, ForgetPassword, VerifyOTP, updatePassword, getUserInfo, changePassword }
+module.exports = { Register, Login, ForgetPassword, VerifyOTP, updatePassword, getUserInfo, changePassword, changeUserInfo }

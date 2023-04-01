@@ -80,6 +80,7 @@ const Order = mongoose.model('Orders', new mongoose.Schema({
     },
     status: {
         type: String,
+        enum: ["Pending", "Prepared", "Delivered","Rejected"],
         default:"Pending"  
     },
     paymentId: {
@@ -90,6 +91,10 @@ const Order = mongoose.model('Orders', new mongoose.Schema({
     delegate: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
+    },
+    supervisor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Users"
     }
 },{timestamps:true}))
 

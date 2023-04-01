@@ -62,6 +62,12 @@ const User = mongoose.model('Users', new mongoose.Schema({
     role: {
         type: Number,
         default:1000
-    }
+    },
+    supervisor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Users"
+    },
+    userImg: String
+
 }))
 module.exports = User

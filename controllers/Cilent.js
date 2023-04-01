@@ -40,7 +40,7 @@ const getRate = async (req, res) => {
 const makeOrder = async (req, res) => {
     const  userId  = req.user.id
     const { senderName, senderPhone, senderEmail,senderPostalCode, senderAddress, receivedName, receivedPhone, receivedEmail, receivedPostalCode, receivedAddress, category, weight, dimension, services, notes, paymentId, deliverTime } = req.body
-    if (!senderName ||  !senderPhone ||  !senderEmail || !senderPostalCode || !senderAddress || !receivedName || !receivedPhone || !receivedEmail || !receivedPostalCode || !receivedAddress || !category || !weight || !dimension  || !notes || !paymentId || !deliverTime) return res.status(400).json({msg:"All Fields Are Required"})
+    if (!senderName || !senderPhone || !senderEmail || !senderPostalCode || !senderAddress || !receivedName || !receivedPhone || !receivedEmail || !receivedPostalCode || !receivedAddress || !category || !weight || !dimension || !notes || !paymentId || !deliverTime || !services) return res.status(400).json({msg:"All Fields Are Required"})
     try {
         const foundUser = await User.findById(userId)
         if (!foundUser) return res.status(404).send("User not found")
@@ -69,7 +69,7 @@ const makeOrder = async (req, res) => {
         res.status(201).send(order)
     } catch (error) {
         console.error(error)
-        res.status(500).json({msg:error.msg})
+        res.status(500).json({msg:error.message})
     }
 }
 
@@ -174,6 +174,7 @@ const makeReview = async (req, res) => {
             userId,
             orderId,
             delegateId,
+            supervisorId: await delegateInfo.supervisor,
             review
         }).then((val, err) => {
             if (err) return res.status(500).json({ msg: err.message })
@@ -185,4 +186,5 @@ const makeReview = async (req, res) => {
     }
     
 }
+
 module.exports = { makeOrder, getOrders, getOrderById, getOrderByTrackId, updateOrder, deleteOrder, getPaymopAuth, Payment_key, getRate,makeReview }
